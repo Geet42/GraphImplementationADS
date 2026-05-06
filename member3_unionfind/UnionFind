@@ -1,0 +1,104 @@
+import java.util.*;
+
+/**
+ * UnionFind.java - Basic Union-Find Data Structure
+ * Muskaan: Union-Find with Optimizations
+ * 
+ * Basic implementation without optimizations
+ * Time Complexity: O(n) per operation in worst case
+ */
+public class UnionFind {
+    
+    private Map<Integer, Integer> parent;
+    private int numSets;
+    private long unionOperations;
+    private long findOperations;
+    
+    /**
+     * Creates a union-find structure with n elements (0 to n-1)
+     */
+    public UnionFind(int n) {
+        parent = new HashMap<>();
+        numSets = n;
+        unionOperations = 0;
+        findOperations = 0;
+        
+        for (int i = 0; i < n; i++) {
+            parent.put(i, i); // Each element is its own parent initially
+        }
+    }
+    
+    /**
+     * Finds the set containing element x
+     * Basic implementation without path compression
+     */
+    public int find(int x) {
+        findOperations++;
+        
+        while (parent.get(x) != x) {
+            x = parent.get(x);
+        }
+        return x;
+    }
+    
+    /**
+     * Unions the sets containing x and y
+     * Basic implementation without union by rank
+     */
+    public void union(int x, int y) {
+        unionOperations++;
+        
+        int rootX = find(x);
+        int rootY = find(y);
+        
+        if (rootX != rootY) {
+            parent.put(rootX, rootY);
+            numSets--;
+        }
+    }
+    
+    /**
+     * Tests if x and y are in the same set
+     */
+    public boolean connected(int x, int y) {
+        return find(x) == find(y);
+    }
+    
+    /**
+     * Returns the number of disjoint sets
+     */
+    public int getNumSets() {
+        return numSets;
+    }
+    
+    /**
+     * Returns statistics
+     */
+    public long getUnionOperations() {
+        return unionOperations;
+    }
+    
+    public long getFindOperations() {
+        return findOperations;
+    }
+    
+    /**
+     * Prints the structure
+     */
+    public void printStructure() {
+        Map<Integer, List<Integer>> sets = new HashMap<>();
+        
+        for (int i : parent.keySet()) {
+            int root = find(i);
+            sets.putIfAbsent(root, new ArrayList<>());
+            sets.get(root).add(i);
+        }
+        
+        System.out.println("Disjoint Sets (" + numSets + " total):");
+        int setNum = 1;
+        for (List<Integer> set : sets.values()) {
+            Collections.sort(set);
+            System.out.println("  Set " + setNum++ + ": " + set);
+        }
+    }
+}
